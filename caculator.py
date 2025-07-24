@@ -1,6 +1,7 @@
 import tkinter as tk
 from math import sin, cos, tan, log, sqrt, radians, pi, e, pow
 from tkinter import messagebox
+import re
 
 class Calculator:
     def __init__(self, root):
@@ -20,6 +21,9 @@ class Calculator:
         self.quadratic_a = None
         self.quadratic_b = None
         self.quadratic_c = None
+        self.root_n_mode = False      # Đang nhập căn bậc n
+        self.root_n_value = None     # Lưu giá trị n cho căn bậc n
+        self.just_calculated = False # Đánh dấu vừa bấm =
 
         self.input_text = tk.StringVar()
         self.result_text = tk.StringVar()
@@ -46,11 +50,12 @@ class Calculator:
         buttons = [
             ['(', ')', 'AC', 'Del', 'x10^n'],
             ['sin', 'cos', 'tan', 'cotan', 'log'],
-            ['7', '8', '9', '+', 'x^2'],
-            ['4', '5', '6', '-', 'x^3'],
-            ['1', '2', '3', 'x', 'x^n'],
-            ['0', '.', '=', '/', '√'],
-            ['', '', '','PT bậc 1', 'PT bậc 2']
+            ['√', '3√', 'n√', 'PT bậc 1', 'PT bậc 2'],
+            ['Bin', 'Dec', 'Hex', 'Oct', 'x^2'],
+            ['7', '8', '9', '+', 'x^3'],
+            ['4', '5', '6', '-', 'x^n'],
+            ['1', '2', '3', 'x', '1/x'],
+            ['0', '.', '=', '/', ''],
         ]
 
         for r, row in enumerate(buttons):
@@ -63,6 +68,24 @@ class Calculator:
                 btn.grid(row=r, column=c, padx=5, pady=5)
 
     def handle_button(self, char):
+        if self.just_calculated:
+            if char in '0123456789.':
+                self.expression = ''
+                self.display_expression = ''
+                self.input_text.set('')
+                self.just_calculated = False
+            elif char in ['+', '-', 'x', '/', '*']:
+                last_result = self.result_text.get().replace('=','').strip()
+                self.expression = last_result
+                self.display_expression = last_result
+                self.input_text.set(self.display_expression)
+                self.just_calculated = False
+            elif char in ['x^2', 'x^3', 'x^n', '√', '3√', 'n√', '1/x']:
+                last_result = self.result_text.get().replace('=','').strip()
+                self.expression = last_result
+                self.display_expression = last_result
+                self.input_text.set(self.display_expression)
+                self.just_calculated = False
         if char == 'AC':
             self.clear_all()
         elif char == 'Del':
@@ -94,6 +117,45 @@ class Calculator:
             self.expression += 'sqrt('
             self.display_expression += '√('
             self.input_text.set(self.display_expression)
+        elif char == '3√':
+            self.root_n_mode = True
+            self.root_n_value = 3
+            self.expression += 'pow('
+            self.display_expression += '3√('
+            self.input_text.set(self.display_expression)
+        elif char == '1/x':
+            self.expression += '**(-1)'
+            self.display_expression += '^(-1)'
+            self.input_text.set(self.display_expression)
+        elif char == 'n√':
+            match = re.search(r'(\d+)$', self.expression)
+            if match:
+                n = int(match.group(1))
+                self.expression = self.expression[:-len(str(n))]
+                self.display_expression = self.display_expression[:-len(str(n))]
+                self.root_n_mode = True
+                self.root_n_value = n
+                self.expression += 'pow('
+                self.display_expression += f'{n}√('
+                self.input_text.set(self.display_expression)
+            else:
+                self.root_n_mode = True
+                self.root_n_value = 2
+                self.expression += 'pow('
+                self.display_expression += '2√('
+                self.input_text.set(self.display_expression)
+        elif char == ')':
+            if self.root_n_mode and self.root_n_value is not None:
+                n = self.root_n_value
+                self.expression += f',1/{n})'
+                self.display_expression += ')'
+                self.input_text.set(self.display_expression)
+                self.root_n_mode = False
+                self.root_n_value = None
+            else:
+                self.expression += ')'
+                self.display_expression += ')'
+                self.input_text.set(self.display_expression)
         elif char == 'PT bậc 1':
             self.linear_mode = True
             self.linear_step = 1
@@ -113,6 +175,38 @@ class Calculator:
             self.display_expression = ""
             self.input_text.set("Nhập a rồi nhấn =")
             self.result_text.set("")
+        elif char == 'Bin':
+            value = self.get_current_value()
+            try:
+                int_value = self.parse_int_value(value)
+                self.result_text.set('= ' + bin(int_value))
+                self.just_calculated = True
+            except:
+                self.result_text.set('Lỗi!')
+        elif char == 'Dec':
+            value = self.get_current_value()
+            try:
+                dec_value = self.parse_int_value(value)
+                self.result_text.set('= ' + str(dec_value))
+                self.just_calculated = True
+            except:
+                self.result_text.set('Lỗi!')
+        elif char == 'Hex':
+            value = self.get_current_value()
+            try:
+                int_value = self.parse_int_value(value)
+                self.result_text.set('= ' + hex(int_value))
+                self.just_calculated = True
+            except:
+                self.result_text.set('Lỗi!')
+        elif char == 'Oct':
+            value = self.get_current_value()
+            try:
+                int_value = self.parse_int_value(value)
+                self.result_text.set('= ' + oct(int_value))
+                self.just_calculated = True
+            except:
+                self.result_text.set('Lỗi!')
         else:
             if self.linear_mode:
                 if char in '0123456789.-':
@@ -154,6 +248,7 @@ class Calculator:
         self.quadratic_a = None
         self.quadratic_b = None
         self.quadratic_c = None
+        self.just_calculated = False
 
     def delete_last(self):
         if self.expression.endswith("**2") and self.display_expression.endswith("^2"):
@@ -187,6 +282,7 @@ class Calculator:
                 "pow": pow
             })
             self.result_text.set("= " + str(result))
+            self.just_calculated = True
         except:
             messagebox.showerror("Lỗi", "Phép tính không hợp lệ!")
             self.clear_all()
@@ -313,6 +409,26 @@ class Calculator:
             return f"x kép = {x}"
         else:
             return "Vô nghiệm"
+
+    def get_current_value(self):
+        # Ưu tiên lấy kết quả nếu vừa bấm =, nếu không thì lấy số đang nhập
+        if self.just_calculated:
+            return self.result_text.get().replace('=','').strip()
+        elif self.display_expression:
+            return self.display_expression
+        else:
+            return '0'
+
+    def parse_int_value(self, value):
+        value = value.strip()
+        if value.startswith('0b'):
+            return int(value, 2)
+        elif value.startswith('0x'):
+            return int(value, 16)
+        elif value.startswith('0o'):
+            return int(value, 8)
+        else:
+            return int(float(value))
 
 # ===== Run chương trình =====
 if __name__ == "__main__":
