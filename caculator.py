@@ -50,12 +50,12 @@ class Calculator:
         buttons = [
             ['(', ')', 'AC', 'Del', 'x10^n'],
             ['sin', 'cos', 'tan', 'cotan', 'log'],
-            ['√', '3√', 'n√', 'PT bậc 1', 'PT bậc 2'],
-            ['Bin', 'Dec', 'Hex', 'Oct', 'x^2'],
-            ['7', '8', '9', '+', 'x^3'],
-            ['4', '5', '6', '-', 'x^n'],
-            ['1', '2', '3', 'x', '1/x'],
-            ['0', '.', '=', '/', ''],
+            ['√', '3√', 'n√', 'PT bậc 1','PT bậc 2'],
+            ['Bin', 'Dec', 'Hex', 'Oct', "'"],
+            ['7', '8', '9', '+', 'x^2'],
+            ['4', '5', '6', '-', 'x^3'],
+            ['1', '2', '3', 'x', 'x^n'],
+            ['0', '.', '=', '/', '1/x'],
         ]
 
         for r, row in enumerate(buttons):
@@ -207,6 +207,10 @@ class Calculator:
                 self.just_calculated = True
             except:
                 self.result_text.set('Lỗi!')
+        elif char == "'":
+            self.expression += "'"
+            self.display_expression += "'"
+            self.input_text.set(self.display_expression)
         else:
             if self.linear_mode:
                 if char in '0123456789.-':
@@ -270,7 +274,8 @@ class Calculator:
 
     def calculate(self):
         try:
-            result = eval(self.expression, {"__builtins__": None}, {
+            expr = self._convert_deg_min_sec(self.expression)
+            result = eval(expr, {"__builtins__": None}, {
                 "sin": lambda x: sin(radians(x)),
                 "cos": lambda x: cos(radians(x)),
                 "tan": lambda x: tan(radians(x)),
@@ -286,6 +291,18 @@ class Calculator:
         except:
             messagebox.showerror("Lỗi", "Phép tính không hợp lệ!")
             self.clear_all()
+
+    def _convert_deg_min_sec(self, expr):
+        def repl(m):
+            deg = float(m.group(1)) if m.group(1) else 0
+            minute = float(m.group(2)) if m.group(2) else 0
+            second = float(m.group(3)) if m.group(3) else 0
+            return f"({deg} + {minute}/60 + {second}/3600)"
+        for trig in ['sin', 'cos', 'tan', 'cotan']:
+            expr = re.sub(
+                fr'{trig}\((\d+)(?:\'(\d+))?(?:\'(\d+))?\'?\)',
+                lambda m: f"{trig}{repl(m)}", expr)
+        return expr
 
     def solve_linear_equation_step(self):
         if self.linear_step == 1:
