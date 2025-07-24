@@ -10,8 +10,8 @@ class Calculator:
         self.root.geometry("520x570")
         self.root.configure(bg="#0c5789")
 
-        self.expression = ""          
-        self.display_expression = ""  
+        self.cal = ""          
+        self.display_cal = ""  
         self.linear_mode = False      # Đang ở chế độ PT bậc 1
         self.linear_step = 0          # 0: chưa nhập, 1: nhập a, 2: nhập b
         self.linear_a = None
@@ -70,21 +70,21 @@ class Calculator:
     def handle_button(self, char):
         if self.just_calculated:
             if char in '0123456789.':
-                self.expression = ''
-                self.display_expression = ''
+                self.cal = ''
+                self.display_cal = ''
                 self.input_text.set('')
                 self.just_calculated = False
             elif char in ['+', '-', 'x', '/', '*']:
                 last_result = self.result_text.get().replace('=','').strip()
-                self.expression = last_result
-                self.display_expression = last_result
-                self.input_text.set(self.display_expression)
+                self.cal = last_result
+                self.display_cal = last_result
+                self.input_text.set(self.display_cal)
                 self.just_calculated = False
             elif char in ['x^2', 'x^3', 'x^n', '√', '3√', 'n√', '1/x']:
                 last_result = self.result_text.get().replace('=','').strip()
-                self.expression = last_result
-                self.display_expression = last_result
-                self.input_text.set(self.display_expression)
+                self.cal = last_result
+                self.display_cal = last_result
+                self.input_text.set(self.display_cal)
                 self.just_calculated = False
         if char == 'AC':
             self.clear_all()
@@ -98,71 +98,71 @@ class Calculator:
             else:
                 self.calculate()
         elif char == 'x^2':
-            self.expression += '**2'
-            self.display_expression += '^2'
-            self.input_text.set(self.display_expression)
+            self.cal += '**2'
+            self.display_cal += '^2'
+            self.input_text.set(self.display_cal)
         elif char == 'x^3':
-            self.expression += '**3'
-            self.display_expression += '^3'
-            self.input_text.set(self.display_expression)
+            self.cal += '**3'
+            self.display_cal += '^3'
+            self.input_text.set(self.display_cal)
         elif char == 'x^n':
-            self.expression += '**'
-            self.display_expression += '^'
-            self.input_text.set(self.display_expression)
+            self.cal += '**'
+            self.display_cal += '^'
+            self.input_text.set(self.display_cal)
         elif char == 'x10^n':
-            self.expression += '*10**'
-            self.display_expression += 'x10^'
-            self.input_text.set(self.display_expression)
+            self.cal += '*10**'
+            self.display_cal += 'x10^'
+            self.input_text.set(self.display_cal)
         elif char == '√':
-            self.expression += 'sqrt('
-            self.display_expression += '√('
-            self.input_text.set(self.display_expression)
+            self.cal += 'sqrt('
+            self.display_cal += '√('
+            self.input_text.set(self.display_cal)
         elif char == '3√':
             self.root_n_mode = True
             self.root_n_value = 3
-            self.expression += 'pow('
-            self.display_expression += '3√('
-            self.input_text.set(self.display_expression)
+            self.cal += 'pow('
+            self.display_cal += '3√('
+            self.input_text.set(self.display_cal)
         elif char == '1/x':
-            self.expression += '**(-1)'
-            self.display_expression += '^(-1)'
-            self.input_text.set(self.display_expression)
+            self.cal += '**(-1)'
+            self.display_cal += '^(-1)'
+            self.input_text.set(self.display_cal)
         elif char == 'n√':
-            match = re.search(r'(\d+)$', self.expression)
+            match = re.search(r'(\d+)$', self.cal)
             if match:
                 n = int(match.group(1))
-                self.expression = self.expression[:-len(str(n))]
-                self.display_expression = self.display_expression[:-len(str(n))]
+                self.cal = self.cal[:-len(str(n))]
+                self.display_cal = self.display_cal[:-len(str(n))]
                 self.root_n_mode = True
                 self.root_n_value = n
-                self.expression += 'pow('
-                self.display_expression += f'{n}√('
-                self.input_text.set(self.display_expression)
+                self.cal += 'pow('
+                self.display_cal += f'{n}√('
+                self.input_text.set(self.display_cal)
             else:
                 self.root_n_mode = True
                 self.root_n_value = 2
-                self.expression += 'pow('
-                self.display_expression += '2√('
-                self.input_text.set(self.display_expression)
+                self.cal += 'pow('
+                self.display_cal += '2√('
+                self.input_text.set(self.display_cal)
         elif char == ')':
             if self.root_n_mode and self.root_n_value is not None:
                 n = self.root_n_value
-                self.expression += f',1/{n})'
-                self.display_expression += ')'
-                self.input_text.set(self.display_expression)
+                self.cal += f',1/{n})'
+                self.display_cal += ')'
+                self.input_text.set(self.display_cal)
                 self.root_n_mode = False
                 self.root_n_value = None
             else:
-                self.expression += ')'
-                self.display_expression += ')'
-                self.input_text.set(self.display_expression)
+                self.cal += ')'
+                self.display_cal += ')'
+                self.input_text.set(self.display_cal)
         elif char == 'PT bậc 1':
             self.linear_mode = True
             self.linear_step = 1
             self.linear_a = None
             self.linear_b = None
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("Nhập a rồi nhấn =")
             self.result_text.set("")
         elif char == 'PT bậc 2':
@@ -171,8 +171,8 @@ class Calculator:
             self.quadratic_a = None
             self.quadratic_b = None
             self.quadratic_c = None
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("Nhập a rồi nhấn =")
             self.result_text.set("")
         elif char == 'Bin':
@@ -208,39 +208,39 @@ class Calculator:
             except:
                 self.result_text.set('Lỗi!')
         elif char == "'":
-            self.expression += "'"
-            self.display_expression += "'"
-            self.input_text.set(self.display_expression)
+            self.cal += "'"
+            self.display_cal += "'"
+            self.input_text.set(self.display_cal)
         else:
             if self.linear_mode:
                 if char in '0123456789.-':
-                    self.expression += str(char)
-                    self.display_expression += str(char)
-                    self.input_text.set(self.display_expression)
+                    self.cal += str(char)
+                    self.display_cal += str(char)
+                    self.input_text.set(self.display_cal)
             elif self.quadratic_mode:
                 if char in '0123456789.-':
-                    self.expression += str(char)
-                    self.display_expression += str(char)
-                    self.input_text.set(self.display_expression)
+                    self.cal += str(char)
+                    self.display_cal += str(char)
+                    self.input_text.set(self.display_cal)
             else:
-                if self.expression == "0":
-                    self.expression = ""
-                    self.display_expression = ""
+                if self.cal == "0":
+                    self.cal = ""
+                    self.display_cal = ""
 
                 if char == 'x':
-                    self.expression += '*'
-                    self.display_expression += 'x'
+                    self.cal += '*'
+                    self.display_cal += 'x'
                 elif char in ['sin', 'cos', 'tan', 'cotan', 'log']:
-                    self.expression += f"{char}("
-                    self.display_expression += f"{char}("
+                    self.cal += f"{char}("
+                    self.display_cal += f"{char}("
                 else:
-                    self.expression += str(char)
-                    self.display_expression += str(char)
-                self.input_text.set(self.display_expression)
+                    self.cal += str(char)
+                    self.display_cal += str(char)
+                self.input_text.set(self.display_cal)
 
     def clear_all(self):
-        self.expression = ""
-        self.display_expression = ""
+        self.cal = ""
+        self.display_cal = ""
         self.input_text.set("0")
         self.result_text.set("= 0")
         self.linear_mode = False
@@ -255,26 +255,26 @@ class Calculator:
         self.just_calculated = False
 
     def delete_last(self):
-        if self.expression.endswith("**2") and self.display_expression.endswith("^2"):
-            self.expression = self.expression[:-3]
-            self.display_expression = self.display_expression[:-2]
-        elif self.expression.endswith("**3") and self.display_expression.endswith("^3"):
-            self.expression = self.expression[:-3]
-            self.display_expression = self.display_expression[:-2]
-        elif self.expression.endswith("**n") and self.display_expression.endswith("^n"):
-            self.expression = self.expression[:-4]
-            self.display_expression = self.display_expression[:-3]
-        elif self.expression.endswith("*10**") and self.display_expression.endswith("x10^"):
-            self.expression = self.expression[:-5]
-            self.display_expression = self.display_expression[:-4]
+        if self.cal.endswith("**2") and self.display_cal.endswith("^2"):
+            self.cal = self.cal[:-3]
+            self.display_cal = self.display_cal[:-2]
+        elif self.cal.endswith("**3") and self.display_cal.endswith("^3"):
+            self.cal = self.cal[:-3]
+            self.display_cal = self.display_cal[:-2]
+        elif self.cal.endswith("**n") and self.display_cal.endswith("^n"):
+            self.cal = self.cal[:-4]
+            self.display_cal = self.display_cal[:-3]
+        elif self.cal.endswith("*10**") and self.display_cal.endswith("x10^"):
+            self.cal = self.cal[:-5]
+            self.display_cal = self.display_cal[:-4]
         else:
-            self.expression = self.expression[:-1]
-            self.display_expression = self.display_expression[:-1]
-        self.input_text.set(self.display_expression if self.display_expression else "0")
+            self.cal = self.cal[:-1]
+            self.display_cal = self.display_cal[:-1]
+        self.input_text.set(self.display_cal if self.display_cal else "0")
 
     def calculate(self):
         try:
-            expr = self._convert_deg_min_sec(self.expression)
+            expr = self._convert_deg_min_sec(self.cal)
             result = eval(expr, {"__builtins__": None}, {
                 "sin": lambda x: sin(radians(x)),
                 "cos": lambda x: cos(radians(x)),
@@ -306,28 +306,28 @@ class Calculator:
 
     def solve_linear_equation_step(self):
         if self.linear_step == 1:
-            # Đang nhập a
+            # Nhập a
             try:
-                a = float(self.expression)
+                a = float(self.cal)
             except Exception:
                 self.result_text.set("Hệ số a không hợp lệ!")
-                self.expression = ""
-                self.display_expression = ""
+                self.cal = ""
+                self.display_cal = ""
                 self.input_text.set("")
                 return
             self.linear_a = a
             self.linear_step = 2
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("Nhập b rồi nhấn =")
         elif self.linear_step == 2:
-            # Đang nhập b
+            # Nhập b
             try:
-                b = float(self.expression)
+                b = float(self.cal)
             except Exception:
                 self.result_text.set("Hệ số b không hợp lệ!")
-                self.expression = ""
-                self.display_expression = ""
+                self.cal = ""
+                self.display_cal = ""
                 self.input_text.set("")
                 return
             self.linear_b = b
@@ -346,49 +346,49 @@ class Calculator:
             self.linear_step = 0
             self.linear_a = None
             self.linear_b = None
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("0")
 
     def solve_quadratic_equation_step(self):
         if self.quadratic_step == 1:
-            # Đang nhập a
+            # Nhập a
             try:
-                a = float(self.expression)
+                a = float(self.cal)
             except Exception:
                 self.result_text.set("Hệ số a không hợp lệ!")
-                self.expression = ""
-                self.display_expression = ""
+                self.cal = ""
+                self.display_cal = ""
                 self.input_text.set("")
                 return
             self.quadratic_a = a
             self.quadratic_step = 2
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("Nhập b rồi nhấn =")
         elif self.quadratic_step == 2:
-            # Đang nhập b
+            # Nhập b
             try:
-                b = float(self.expression)
+                b = float(self.cal)
             except Exception:
                 self.result_text.set("Hệ số b không hợp lệ!")
-                self.expression = ""
-                self.display_expression = ""
+                self.cal = ""
+                self.display_cal = ""
                 self.input_text.set("")
                 return
             self.quadratic_b = b
             self.quadratic_step = 3
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("Nhập c rồi nhấn =")
         elif self.quadratic_step == 3:
-            # Đang nhập c
+            # Nhập c
             try:
-                c = float(self.expression)
+                c = float(self.cal)
             except Exception:
                 self.result_text.set("Hệ số c không hợp lệ!")
-                self.expression = ""
-                self.display_expression = ""
+                self.cal = ""
+                self.display_cal = ""
                 self.input_text.set("")
                 return
             self.quadratic_c = c
@@ -403,8 +403,8 @@ class Calculator:
             self.quadratic_a = None
             self.quadratic_b = None
             self.quadratic_c = None
-            self.expression = ""
-            self.display_expression = ""
+            self.cal = ""
+            self.display_cal = ""
             self.input_text.set("0")
 
     def solve_quadratic_equation(self, a, b, c):
@@ -428,11 +428,10 @@ class Calculator:
             return "Vô nghiệm"
 
     def get_current_value(self):
-        # Ưu tiên lấy kết quả nếu vừa bấm =, nếu không thì lấy số đang nhập
         if self.just_calculated:
             return self.result_text.get().replace('=','').strip()
-        elif self.display_expression:
-            return self.display_expression
+        elif self.display_cal:
+            return self.display_cal
         else:
             return '0'
 
