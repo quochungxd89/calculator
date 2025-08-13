@@ -1,7 +1,12 @@
 import tkinter as tk
-from math import sin, cos, tan, log, sqrt, radians, pi, e, pow
 from tkinter import messagebox
+from math import sin, cos, tan, log, sqrt, radians, pi, e, pow
 import re
+
+from logic.equations import solve_linear_equation, solve_quadratic_equation
+from logic.utils import convert_deg_min_sec, parse_int_value
+from ui.display import create_display
+from ui.buttons import create_buttons
 
 class Calculator:
     def __init__(self, root):
@@ -12,60 +17,24 @@ class Calculator:
 
         self.cal = ""          
         self.display_cal = ""  
-        self.linear_mode = False      # Đang ở chế độ PT bậc 1
-        self.linear_step = 0          # 0: chưa nhập, 1: nhập a, 2: nhập b
+        self.linear_mode = False
+        self.linear_step = 0
         self.linear_a = None
         self.linear_b = None
-        self.quadratic_mode = False   # Đang ở chế độ PT bậc 2
-        self.quadratic_step = 0       # 0: chưa nhập, 1: nhập a, 2: nhập b, 3: nhập c
+        self.quadratic_mode = False
+        self.quadratic_step = 0
         self.quadratic_a = None
         self.quadratic_b = None
         self.quadratic_c = None
-        self.root_n_mode = False      # Đang nhập căn bậc n
-        self.root_n_value = None     # Lưu giá trị n cho căn bậc n
-        self.just_calculated = False # Đánh dấu vừa bấm =
+        self.root_n_mode = False
+        self.root_n_value = None
+        self.just_calculated = False
 
-        self.input_text = tk.StringVar()
-        self.result_text = tk.StringVar()
+        self.input_text = tk.StringVar(value="0")
+        self.result_text = tk.StringVar(value="= 0")
 
-        self.input_text.set("0")
-        self.result_text.set("= 0")
-
-        # ===== Màn hình hiển thị =====
-        display_frame = tk.Frame(self.root, height=100, bg="white")
-        display_frame.pack(fill="both", padx=10, pady=10)
-
-        input_label = tk.Label(display_frame, textvariable=self.input_text,
-                               font=("Arial", 20), anchor="e", bg="white", fg="black")
-        input_label.pack(expand=True, fill="both")
-
-        result_label = tk.Label(display_frame, textvariable=self.result_text,
-                                font=("Arial", 16), anchor="e", bg="white", fg="gray")
-        result_label.pack(expand=True, fill="both")
-
-        # ===== Bàn phím =====
-        btn_frame = tk.Frame(self.root, bg="#0c5789")
-        btn_frame.pack()
-
-        buttons = [
-            ['(', ')', 'AC', 'Del', 'x10^n'],
-            ['sin', 'cos', 'tan', 'cotan', 'log'],
-            ['√', '3√', 'n√', 'PT bậc 1','PT bậc 2'],
-            ['Bin', 'Dec', 'Hex', 'Oct', "'"],
-            ['7', '8', '9', '+', 'x^2'],
-            ['4', '5', '6', '-', 'x^3'],
-            ['1', '2', '3', 'x', 'x^n'],
-            ['0', '.', '=', '/', '1/x'],
-        ]
-
-        for r, row in enumerate(buttons):
-            for c, char in enumerate(row):
-                if char == '':
-                    continue
-                btn = tk.Button(btn_frame, text=char, width=6, height=2,
-                                font=("Arial", 14), fg="black", bg="white",
-                                command=lambda ch=char: self.handle_button(ch))
-                btn.grid(row=r, column=c, padx=5, pady=5)
+        create_display(self)
+        create_buttons(self)
 
     def handle_button(self, char):
         if self.just_calculated:
@@ -74,7 +43,7 @@ class Calculator:
                 self.display_cal = ''
                 self.input_text.set('')
                 self.just_calculated = False
-            elif char in ['+', '-', 'x', '/', '*']:
+            elif char in ['+', '-', 'x', '/']:
                 last_result = self.result_text.get().replace('=','').strip()
                 self.cal = last_result
                 self.display_cal = last_result
@@ -86,6 +55,7 @@ class Calculator:
                 self.display_cal = last_result
                 self.input_text.set(self.display_cal)
                 self.just_calculated = False
+
         if char == 'AC':
             self.clear_all()
         elif char == 'Del':
@@ -175,35 +145,18 @@ class Calculator:
             self.display_cal = ""
             self.input_text.set("Nhập a rồi nhấn =")
             self.result_text.set("")
-        elif char == 'Bin':
+        elif char in ['Bin', 'Dec', 'Hex', 'Oct']:
             value = self.get_current_value()
             try:
-                int_value = self.parse_int_value(value)
-                self.result_text.set('= ' + bin(int_value))
-                self.just_calculated = True
-            except:
-                self.result_text.set('Lỗi!')
-        elif char == 'Dec':
-            value = self.get_current_value()
-            try:
-                dec_value = self.parse_int_value(value)
-                self.result_text.set('= ' + str(dec_value))
-                self.just_calculated = True
-            except:
-                self.result_text.set('Lỗi!')
-        elif char == 'Hex':
-            value = self.get_current_value()
-            try:
-                int_value = self.parse_int_value(value)
-                self.result_text.set('= ' + hex(int_value))
-                self.just_calculated = True
-            except:
-                self.result_text.set('Lỗi!')
-        elif char == 'Oct':
-            value = self.get_current_value()
-            try:
-                int_value = self.parse_int_value(value)
-                self.result_text.set('= ' + oct(int_value))
+                int_value = parse_int_value(value)
+                if char == 'Bin':
+                    self.result_text.set('= ' + bin(int_value))
+                elif char == 'Dec':
+                    self.result_text.set('= ' + str(int_value))
+                elif char == 'Hex':
+                    self.result_text.set('= ' + hex(int_value))
+                elif char == 'Oct':
+                    self.result_text.set('= ' + oct(int_value))
                 self.just_calculated = True
             except:
                 self.result_text.set('Lỗi!')
@@ -261,9 +214,6 @@ class Calculator:
         elif self.cal.endswith("**3") and self.display_cal.endswith("^3"):
             self.cal = self.cal[:-3]
             self.display_cal = self.display_cal[:-2]
-        elif self.cal.endswith("**n") and self.display_cal.endswith("^n"):
-            self.cal = self.cal[:-4]
-            self.display_cal = self.display_cal[:-3]
         elif self.cal.endswith("*10**") and self.display_cal.endswith("x10^"):
             self.cal = self.cal[:-5]
             self.display_cal = self.display_cal[:-4]
@@ -274,7 +224,7 @@ class Calculator:
 
     def calculate(self):
         try:
-            expr = self._convert_deg_min_sec(self.cal)
+            expr = convert_deg_min_sec(self.cal)
             result = eval(expr, {"__builtins__": None}, {
                 "sin": lambda x: sin(radians(x)),
                 "cos": lambda x: cos(radians(x)),
@@ -292,28 +242,14 @@ class Calculator:
             messagebox.showerror("Lỗi", "Phép tính không hợp lệ!")
             self.clear_all()
 
-    def _convert_deg_min_sec(self, expr):
-        def repl(m):
-            deg = float(m.group(1)) if m.group(1) else 0
-            minute = float(m.group(2)) if m.group(2) else 0
-            second = float(m.group(3)) if m.group(3) else 0
-            return f"({deg} + {minute}/60 + {second}/3600)"
-        for trig in ['sin', 'cos', 'tan', 'cotan']:
-            expr = re.sub(
-                fr'{trig}\((\d+)(?:\'(\d+))?(?:\'(\d+))?\'?\)',
-                lambda m: f"{trig}{repl(m)}", expr)
-        return expr
-
     def solve_linear_equation_step(self):
         if self.linear_step == 1:
-            # Nhập a
             try:
                 a = float(self.cal)
-            except Exception:
+            except:
                 self.result_text.set("Hệ số a không hợp lệ!")
                 self.cal = ""
                 self.display_cal = ""
-                self.input_text.set("")
                 return
             self.linear_a = a
             self.linear_step = 2
@@ -321,45 +257,26 @@ class Calculator:
             self.display_cal = ""
             self.input_text.set("Nhập b rồi nhấn =")
         elif self.linear_step == 2:
-            # Nhập b
             try:
                 b = float(self.cal)
-            except Exception:
+            except:
                 self.result_text.set("Hệ số b không hợp lệ!")
                 self.cal = ""
                 self.display_cal = ""
-                self.input_text.set("")
                 return
             self.linear_b = b
-            # Giải phương trình
-            a = self.linear_a
-            b = self.linear_b
-            if a == 0:
-                if b == 0:
-                    result = "Vô số nghiệm"
-                else:
-                    result = "Vô nghiệm"
-            else:
-                result = f"x = {-b / a}"
+            result = solve_linear_equation(self.linear_a, self.linear_b)
             self.result_text.set(result)
-            self.linear_mode = False
-            self.linear_step = 0
-            self.linear_a = None
-            self.linear_b = None
-            self.cal = ""
-            self.display_cal = ""
-            self.input_text.set("0")
+            self.clear_all()
 
     def solve_quadratic_equation_step(self):
         if self.quadratic_step == 1:
-            # Nhập a
             try:
                 a = float(self.cal)
-            except Exception:
+            except:
                 self.result_text.set("Hệ số a không hợp lệ!")
                 self.cal = ""
                 self.display_cal = ""
-                self.input_text.set("")
                 return
             self.quadratic_a = a
             self.quadratic_step = 2
@@ -367,14 +284,12 @@ class Calculator:
             self.display_cal = ""
             self.input_text.set("Nhập b rồi nhấn =")
         elif self.quadratic_step == 2:
-            # Nhập b
             try:
                 b = float(self.cal)
-            except Exception:
+            except:
                 self.result_text.set("Hệ số b không hợp lệ!")
                 self.cal = ""
                 self.display_cal = ""
-                self.input_text.set("")
                 return
             self.quadratic_b = b
             self.quadratic_step = 3
@@ -382,50 +297,17 @@ class Calculator:
             self.display_cal = ""
             self.input_text.set("Nhập c rồi nhấn =")
         elif self.quadratic_step == 3:
-            # Nhập c
             try:
                 c = float(self.cal)
-            except Exception:
+            except:
                 self.result_text.set("Hệ số c không hợp lệ!")
                 self.cal = ""
                 self.display_cal = ""
-                self.input_text.set("")
                 return
             self.quadratic_c = c
-            # Giải phương trình bậc 2
-            a = self.quadratic_a
-            b = self.quadratic_b
-            c = self.quadratic_c
-            result = self.solve_quadratic_equation(a, b, c)
+            result = solve_quadratic_equation(self.quadratic_a, self.quadratic_b, self.quadratic_c)
             self.result_text.set(result)
-            self.quadratic_mode = False
-            self.quadratic_step = 0
-            self.quadratic_a = None
-            self.quadratic_b = None
-            self.quadratic_c = None
-            self.cal = ""
-            self.display_cal = ""
-            self.input_text.set("0")
-
-    def solve_quadratic_equation(self, a, b, c):
-        if a == 0:
-            if b == 0:
-                if c == 0:
-                    return "Vô số nghiệm"
-                else:
-                    return "Vô nghiệm"
-            else:
-                return f"x = {-c / b}"
-        delta = b ** 2 - 4 * a * c
-        if delta > 0:
-            x1 = (-b + sqrt(delta)) / (2 * a)
-            x2 = (-b - sqrt(delta)) / (2 * a)
-            return f"x₁ = {x1}, x₂ = {x2}"
-        elif delta == 0:
-            x = -b / (2 * a)
-            return f"x kép = {x}"
-        else:
-            return "Vô nghiệm"
+            self.clear_all()
 
     def get_current_value(self):
         if self.just_calculated:
@@ -434,20 +316,3 @@ class Calculator:
             return self.display_cal
         else:
             return '0'
-
-    def parse_int_value(self, value):
-        value = value.strip()
-        if value.startswith('0b'):
-            return int(value, 2)
-        elif value.startswith('0x'):
-            return int(value, 16)
-        elif value.startswith('0o'):
-            return int(value, 8)
-        else:
-            return int(float(value))
-
-# ===== Run chương trình =====
-if __name__ == "__main__":
-    root = tk.Tk()
-    app = Calculator(root)
-    root.mainloop()
