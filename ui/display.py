@@ -14,7 +14,7 @@ def create_display(calc):
 
     history_label = tk.Label(display_frame, text="Lịch sử phép tính:", font=("Arial", 12), anchor="w", bg="white", fg="#0c5789")
     history_label.pack(fill="x")
-    calc.history_listbox = tk.Listbox(display_frame, height=3, font=("Arial", 12), bg="#f0f0f0")
+    calc.history_listbox = tk.Listbox(display_frame, height=5, font=("Arial", 12), bg="#f0f0f0")
     calc.history_listbox.pack(fill="both", padx=5, pady=5)
 
     def update_history_display():

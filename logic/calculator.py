@@ -12,7 +12,7 @@ class Calculator:
     def __init__(self, root):
         self.root = root
         self.root.title("Máy Tính Khoa Học")
-        self.root.geometry("520x800")
+        self.root.geometry("520x650")
         self.root.configure(bg="#0c5789")
 
         self.cal = ""          
