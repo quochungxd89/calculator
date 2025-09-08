@@ -50,7 +50,7 @@ class Calculator:
                 self.display_cal = last_result
                 self.input_text.set(self.display_cal)
                 self.just_calculated = False
-            elif char in ['x^2', 'x^3', 'x^n', '√', '3√', 'n√', '1/x']:
+            elif char in ['x²', 'x³', 'xⁿ', '√', '³√', 'ⁿ√', 'x⁻¹','x10ⁿ']:
                 last_result = self.result_text.get().replace('=','').strip()
                 self.cal = last_result
                 self.display_cal = last_result
@@ -82,7 +82,7 @@ class Calculator:
             self.input_text.set(self.display_cal)
         elif char == 'x10ⁿ':
             self.cal += '*10**'
-            self.display_cal += 'x10ⁿ'
+            self.display_cal += 'x10^'
             self.input_text.set(self.display_cal)
         elif char == '√':
             self.cal += 'sqrt('

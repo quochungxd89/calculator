@@ -5,7 +5,7 @@ def create_buttons(calc):
     btn_frame.pack()
 
     buttons = [
-        ['(', ')', 'AC', 'Del', 'x10^n'],
+        ['(', ')', 'AC', 'Del', 'x10ⁿ'],
         ['sin', 'cos', 'tan', 'cotan', 'log'],
         ['√', '³√', 'ⁿ√', 'PT bậc 1','PT bậc 2'],
         ['Bin', 'Dec', 'Hex', 'Oct', "'"],
