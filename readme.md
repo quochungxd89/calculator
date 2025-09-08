@@ -1,10 +1,10 @@
-# 🧮 CALCULATOR - MÁY TÍNH KHOA HỌC ĐA CHỨC NĂNG
+# CALCULATOR - MÁY TÍNH KHOA HỌC ĐA CHỨC NĂNG
 
 **ĐỒ ÁN "KỸ THUẬT LẬP TRÌNH PYTHON - IE221.E32.CN2.CNTT"**
 
 **GVHD**: Thầy THS Nghi Hoàng Khoa
 
-**Thành viên nhóm:**
+**Thành viên nhóm 11:**
 
 | MSSV     | Họ tên               | 
 | -------- | -------------------- | 
@@ -26,19 +26,19 @@ Máy tính khoa học đa chức năng được phát triển bằng Python vớ
 - Tạo giao diện người dùng trực quan và thân thiện
 - Xây dựng hệ thống tính toán chính xác và tin cậy
 
-## ✨ TÍNH NĂNG CHÍNH
+## TÍNH NĂNG CHÍNH
 
-### 🔢 Tính Toán Cơ Bản
+### Tính Toán Cơ Bản
 - Phép tính số học cơ bản (+, -, ×, ÷)
 - Xử lý số thập phân và số nguyên
 - Lịch sử phép tính với 10 phép tính gần nhất
 
 ###  Hàm Khoa Học
 - **Hàm lượng giác**: sin, cos, tan, cotan (tính theo độ)
-- **Hàm logarit**: log tự nhiên
+- **Hàm logarit**: log 
 - **Hàm căn**: √ (căn bậc 2), ³√ (căn bậc 3), ⁿ√ (căn bậc n)
 - **Hàm lũy thừa**: x², x³, xⁿ, x⁻¹
-- **Hàm khoa học**: x×10ⁿ (ký hiệu khoa học)
+- **Hàm khoa học**: x×10ⁿ 
 
 ###  Giải Phương Trình
 - **Phương trình bậc 1**: ax + b = 0
@@ -59,21 +59,9 @@ Máy tính khoa học đa chức năng được phát triển bằng Python vớ
 - Xử lý lỗi thông minh
 
 ##  CÁCH CHẠY ỨNG DỤNG
-
-### Yêu Cầu Hệ Thống
-```
-- Python 3.7+
-- Tkinter (thường có sẵn với Python)
-- Module math (built-in)
-```
-
-### Chạy ứng dụng
 python3 main.py
-```
 
-## 📁 CẤU TRÚC DỰ ÁN
-
-```
+##  CẤU TRÚC DỰ ÁN
 calculator/
 ├── main.py              # File chạy chính
 ├── logic/               # Module xử lý logic tính toán
@@ -88,18 +76,7 @@ calculator/
 ├
 └── README.md            # Tài liệu hướng dẫn
 
-## 🔧 CÔNG NGHỆ SỬ DỤNG
-
-- **Ngôn ngữ**: Python 3.7
+##  CÔNG NGHỆ SỬ DỤNG
+- **Ngôn ngữ**: Python 3
 - **GUI Framework**: Tkinter
-- **Architecture**: MVC Pattern
 - **Modules**: math, re, tkinter
-
-## 🏆 THÀNH TỰU DỰ ÁN
-
-- ✅ Giao diện đẹp và chuyên nghiệp
-- ✅ Tính năng đa dạng và đầy đủ
-- ✅ Code sạch và có cấu trúc
-- ✅ Xử lý lỗi tốt
-- ✅ Tài liệu đầy đủ
-- ✅ Dễ mở rộng và bảo trì
