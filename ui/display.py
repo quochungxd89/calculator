@@ -5,7 +5,8 @@ def create_display(calc):
     display_frame.pack(fill="both", padx=10, pady=10)
 
     input_label = tk.Label(display_frame, textvariable=calc.input_text,
-                           font=("Arial", 20), anchor="e", bg="white", fg="black")
+                           font=("Arial", 20), anchor="e", bg="white", fg="black",
+                           pady=5)
     input_label.pack(expand=True, fill="both")
 
     result_label = tk.Label(display_frame, textvariable=calc.result_text,

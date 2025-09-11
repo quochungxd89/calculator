@@ -6,7 +6,7 @@ def create_buttons(calc):
 
     buttons = [
         ['(', ')', 'AC', 'Del', 'x10ⁿ'],
-        ['sin', 'cos', 'tan', 'cotan', 'log'],
+        ['sin', 'cos', 'tan', 'cotan', 'log₁₀'],
         ['√', '³√', 'ⁿ√', 'PT bậc 1','PT bậc 2'],
         ['Bin', 'Dec', 'Hex', 'Oct', "'"],
         ['7', '8', '9', '+', 'x²'],

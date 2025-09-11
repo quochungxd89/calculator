@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from math import sin, cos, tan, log, sqrt, radians, pi, e, pow
+from math import sin, cos, tan, log10, sqrt, radians, pi, e, pow
 import re
 
 from logic.equations import solve_linear_equation, solve_quadratic_equation
@@ -98,6 +98,10 @@ class Calculator:
             self.cal += '**(-1)'
             self.display_cal += '⁻¹'
             self.input_text.set(self.display_cal)
+        elif char == 'log₁₀':
+            self.cal += 'log10('          
+            self.display_cal += 'log₁₀('  
+            self.input_text.set(self.display_cal)
         elif char == 'ⁿ√':
             match = re.search(r'(\d+)$', self.cal)
             if match:
@@ -184,7 +188,7 @@ class Calculator:
                 if char == 'x':
                     self.cal += '*'
                     self.display_cal += 'x'
-                elif char in ['sin', 'cos', 'tan', 'cotan', 'log']:
+                elif char in ['sin', 'cos', 'tan', 'cotan']:
                     self.cal += f"{char}("
                     self.display_cal += f"{char}("
                 else:
@@ -246,7 +250,7 @@ class Calculator:
                 "cos": lambda x: cos(radians(x)),
                 "tan": lambda x: tan(radians(x)),
                 "cotan": lambda x: 1/tan(radians(x)),
-                "log": log,
+                "log10": log10,
                 "sqrt": sqrt,
                 "pi": pi,
                 "e": e,
